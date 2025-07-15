@@ -1,3 +1,6 @@
+# Implementation of BirdNET embedding clustering algorithm using HDBSCAN from Sci-kit learn
+# Written by Nathaniel Su (nbs63) 7/9/2025
+
 import os
 import numpy as np 
 from sklearn.cluster import HDBSCAN, Birch, OPTICS
