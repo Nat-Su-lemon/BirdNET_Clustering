@@ -100,6 +100,7 @@ To run the tool
 Running either from the application file or source code should yield both a terminal
 window and the gui, which looks like this:
 
+![Alt Text](https://github.com/Nat-Su-lemon/BirdNET_Clustering/blob/main/assets/app.png)
 
 As you can see, most of the buttons here are self explanatory, and the purposes of the
 settings themself are both explained in short tooltips that can be accessed by hovering
@@ -246,6 +247,7 @@ selection table that includes all the embeddings
 
 
 ## Output
+![Alt Text](https://github.com/Nat-Su-lemon/BirdNET_Clustering/blob/main/assets/output.png)
 
 Above is an example of what the cluster output looks like. If the sort_sounds parameter
 is set as true, then individual folders will be created or each label and the corresponding
