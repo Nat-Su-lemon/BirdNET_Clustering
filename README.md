@@ -3,7 +3,7 @@
 # Introduction and Rationale
 
 This is a more detailed description of what I did in regards to clustering similar vocal
-signals together on the Northern Congo data with the intention to find a way to retrain
+signals together on the Northern Congo data or ELP at the Yang Center with the intention to find a way to retrain
 BirdNET on multiple different target species so that performance, and specifically recall,
 could be improved. This investigation is based on a [paper](https://www.sciencedirect.com/science/article/pii/S1574954125002791?utm#s0010) I found that retrained birdNET
 based on their own acoustic monitoring grid, which utilized a clustering method to
