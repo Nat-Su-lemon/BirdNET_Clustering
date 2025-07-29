@@ -5,7 +5,7 @@
 This is a more detailed description of what I did in regards to clustering similar vocal
 signals together on the Northern Congo data with the intention to find a way to retrain
 BirdNET on multiple different target species so that performance, and specifically recall,
-could be improved. This investigation is based on a paper I found that retrained birdNET
+could be improved. This investigation is based on a [paper](https://www.sciencedirect.com/science/article/pii/S1574954125002791?utm#s0010) I found that retrained birdNET
 based on their own acoustic monitoring grid, which utilized a clustering method to
 quickly find and select training samples. I found this idea interesting and wanted to try to
 implement it on my target species, or the Noudable-Ndoki grid, because prior
@@ -31,13 +31,8 @@ parameters within the python script.
     of the target species as possible
 3. Extract embeddings using BirdNET using the sound clips exported from the
     batch analysis
-4. Download the script .py file from here and place it in your script directory where
-    all necessary files for clustering will be contained
-5. Make sure there is a folder of the original sounds behind the extracted
-    embeddings (with the same file names) if the user decides to also sort these
-    sounds into their individual label folders when clustering
-
-
+4. Download and run the Python script for clustering
+5. Setup embeddings and selection table (and sound folder) in correct file structure for clustering
 6. Have a directory of all the embeddings exported from birdNET, which also
     contains a birdNET selection table with corresponding selection numbers so that
     a selection table containing the labels can also be exported (more on formatting
@@ -86,9 +81,10 @@ happen anyway, it is easier to filter out non-target signals through that proces
 **Application .exe file (reccomended)**
 This is recommended because of its simplicity and also because you don’t need to
 install python or its dependencies for the tool to run. Download the latest clustering app
-release from here. Just simply run the .exe file from wherever you downloaded it from
+from the releases page [here](https://github.com/Nat-Su-lemon/BirdNET_Clustering/releases/). Just simply run the .exe file from wherever you downloaded it from
 and you should be all set. Just keep in mind that sometimes it takes a bit to load,
 especially the first time loading it up
+
 **Running from Python Source Code**
 This method gives more insight and control into the code. First, make sure to have a
 recent version (3.10+) of Python installed on your machine as well as a code editor of
@@ -118,12 +114,14 @@ foolproof way to cancel any ongoing processes).
 You can also save and load presets of the settings you choose to use. These settings
 are stored in a .json file and you can also choose where to store them.
 Below are a description of each setting
+
 **Embedding_path:** This is where the birdNET embeddings are stored. They should be a
 list of text files extracted through the birdNET embeddings feature contained in a folder.
 These text files essentially contain a 1024 long list of floating point numbers that the the
 algorithm uses for clustering. If the sound clips are longer than 3 seconds, then birdNET
 creates multiple embeddings for that one sound. This script only takes the first 3
 seconds of embeddings and discards the rest.
+
 **Selection_name:** Set this to a raven selection table saved as a tab delimited file. In
 order for this to be useful, the soundclips that the embeddings are extracted from need
 to be extracted from only this selection table so that the selection numbers can match
@@ -134,9 +132,11 @@ What do I mean by one selection table? You can extract clips from multiple sound
 but they have to be first loaded into raven from just one single selection table before
 exporting the sound clips. Excel can be used to combine multiple selection tables into
 one.
+
 **Base_folder_name:** This is what the base folder for the clustering output should be
 called. The final output folder name depends on the number of duplicates and clustering
 settings.
+
 **Save_path:** The folder where all outputs are saved in. The script will create a folder
 with this name if it does not exist
 
@@ -147,6 +147,7 @@ will take the sounds from this folder and copy them into their own label cluster
 output directory. The sound clip names should match their embeddings, which should
 be a given anyway since you have to extract the clips normally from raven selection
 tables.
+
 **Recluster_noise:** Set this to true if you want to recluster the noise again. Not
 necessary for the most part
 Both the embedding and input path have to exist and contain sound/text files with
@@ -160,9 +161,9 @@ how the script knows which embedding it is currently dealing with!
 The clustering algorithm I am using for this script is called HDBSCAN. It is a
 density-based clustering algorithm that is able to output noise and can operate without
 specifying a cluster size. I am using the Scikit-learn implementation of this algorithm
-(documentation can be found here:
-https://scikit-learn.org/stable/modules/generated/sklearn.cluster.HDBSCAN.html).
-Another type of algorithm I am using is something called UMAP. It serves the purpose
+[(documentation can be found here)](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.HDBSCAN.html).
+
+Another type of algorithm I am using is something called [UMAP](https://umap-learn.readthedocs.io/en/latest/). It serves the purpose
 of reducing the dimensionality of data, since HDBSCAN doesn’t work very well with
 high-dimensional data such as birdNET embeddings (which are 1024D). Typically, I
 reduce the dimensions to the 10 to 50 dimension range, where it seems like the
@@ -191,6 +192,7 @@ noise, but it is susceptible to labeling wrong and different signals together. G
 would say the ‘leaf’ method misses a lot of signals, while the ‘eom’ method can
 incorrectly group some signals together. What works best is, unfortunately, left up to trial
 and error, so some manual double-checking may be needed
+
 **Number of Components (Dimension to reduce to)**
 This is basically the end dimension that the UMAP tool will reduce the embeddings to.
 Generally speaking, it is best to reduce the dimension to somewhere around 10-50, but
@@ -207,24 +209,26 @@ The exact definitions of these parameters can be found either in the comments or
 through their specific documentation websites. What I am writing down is just my
 observations of the effects that changing the parameters will have on clustering of the
 datasets I’ve been working with (Noudable-Ndoki ELP grid).
+
 **Min Samples/Min Cluster Size**
 These parameters go hand in hand with selecting larger more broad clusters vs smaller
 more distinct clusters. Having a higher minimum cluster size results in fewer but more
 broad clusters while a smaller cluster size is able to include smaller more detailed
-signals that otherwise would get excluded to noise. Minimum samples control how
+signals that otherwise would get excluded to noise. 
 
-
-dense a cluster has to be to be considered a cluster. I noticed that increasing the min
+Minimum samples control how dense a cluster has to be to be considered a cluster. I noticed that increasing the min
 sample size tends to result in increasing the amount of noise. Hence, for my use cases,
 I’ve found that lowering the min sample and cluster sizes works the best for picking up
 more subtle differences and call types. If your goal is to have a more specie wide
 clustering of dominant and stereo typed vocal signals, then having higher min
 samples/cluster size values may prove to be more beneficial
+
 **Cluster Selection Epsilon**
 This setting also seems to impact the amount of clusters observed. While the default is
 zero, increasing this parameter value by even a tenth cuts down on the number of
 clusters and will tend to groups more similar sounds together, which could be either
 beneficial or not depending on your target species vocal types.
+
 **Number of Neighbors**
 This is an UMAP setting that also concerns how conservative/fine-grained the clusters
 will be, with a lower number being more conservative and a higher number resulting in
@@ -307,8 +311,3 @@ I had to resort to trial and error by first running a retrained model on a subse
 but that is very time consuming. Furthermore, you have to be sure that any subset you
 use is representative of the larger dataset that you plan to run the detector on. There
 could be unknown signals that could make recall worse without you realizing.
-
-
-
-This is a offline tool, your data stays locally and is not send to any server!
-Feedback & Bug Reports
