@@ -29,7 +29,7 @@ def run_pipeline(params, progress_callback=None, eta_callback=None, log_file=Non
     embedding_path = params['embedding_path']
     base_folder_name = params['base_folder_name']
     save_path = params['save_path']
-    input_path = params['input_path']
+    input_path = params['sounds_path']
     sort_sounds = params['sort_sounds']
     selection_name = params['selection_name']
     recluster_noise = params['recluster_noise']
@@ -42,6 +42,9 @@ def run_pipeline(params, progress_callback=None, eta_callback=None, log_file=Non
     n_neighbors = params['n_neighbors']
     min_dist = params['min_dist']
     cluster_selection_method = params['cluster_selection_method']
+
+    if not input_path:
+        sort_sounds = False
 
     print("Running clustering with:")
     for k, v in params.items():
@@ -71,7 +74,7 @@ def run_pipeline(params, progress_callback=None, eta_callback=None, log_file=Non
 
     print("Loading Audio Embeddings")
     total = os.listdir(embedding_path)
-    total_time = len(total) if not sort_sounds else len(os.listdir(input_path)) + len(total)
+    total_time = len(total) if not sort_sounds or not input_path else len(os.listdir(input_path)) + len(total)
     start_time = time.time()
     with alive_bar(len(total), title = "Loading Audio Embeddings") as bar:
         i = 0

@@ -69,7 +69,7 @@ class ClusteringGUI:
             "embedding_path": "",
             "base_folder_name": "",
             "save_path": "",
-            "input_path": "",
+            "sounds_path": "",
             "sort_sounds": False,
             "selection_name": "",
             "recluster_noise": False,
@@ -96,7 +96,7 @@ class ClusteringGUI:
             "embedding_path": tk.StringVar(value=self.default_values["embedding_path"]),
             "base_folder_name": tk.StringVar(value=self.default_values["base_folder_name"]),
             "save_path": tk.StringVar(value=self.default_values["save_path"]),
-            "input_path": tk.StringVar(value=self.default_values["input_path"]),
+            "sounds_path": tk.StringVar(value=self.default_values["sounds_path"]),
             "sort_sounds": tk.BooleanVar(value=self.default_values["sort_sounds"]),
             "selection_name": tk.StringVar(value=self.default_values["selection_name"]),
             "recluster_noise": tk.BooleanVar(value=self.default_values["recluster_noise"]),
@@ -122,9 +122,9 @@ class ClusteringGUI:
             "embedding_path": "Folder containing the embeddings (from BirdNET).",
             "base_folder_name": "Name for the directory to store sorted sound files.",
             "save_path": "Directory to save the output files.",
-            "input_path": "Folder containing original sound files.",
-            "sort_sounds": "Whether to sort files into label folders.",
-            "selection_name": "File name for Raven selection table (optional).",
+            "sounds_path": "Folder containing original sound files (optional).",
+            "sort_sounds": "Whether to sort sound files into label folders. Uncheck if no sounds_path (optional).",
+            "selection_name": "File name for Raven selection table.",
             "recluster_noise": "Whether to re-cluster the noise group.",
             "make_graph": "Generate and show cluster visualization.",
             "make_3d": "Use 3D instead of 2D visualization.",
@@ -150,7 +150,7 @@ class ClusteringGUI:
             elif isinstance(var, (tk.StringVar, tk.IntVar, tk.DoubleVar)):
                 widget = ttk.Entry(frame, textvariable=var, width=40)
                 widget.grid(row=row, column=1, sticky='ew')
-                if key in ["embedding_path", "save_path", "input_path"]: # if key in ["embedding_path", "base_folder_name", "save_path", "input_path"]:
+                if key in ["embedding_path", "save_path", "sounds_path"]: # if key in ["embedding_path", "base_folder_name", "save_path", "sounds_path"]:
                     ttk.Button(frame, text="Browse", command=lambda v=var: self.browse_folder(v)).grid(row=row, column=2)
                 elif key == "selection_name":
                     ttk.Button(frame, text="Browse", command=lambda v=var: self.browse_file(v)).grid(row=row, column=2)
@@ -231,6 +231,10 @@ class ClusteringGUI:
         for key, var in self.vars.items():
             value = var.get()
             if key == "min_samples" and value == "None":
+                params[key] = None
+            elif key == "min_dist" and value == "None":
+                params[key] = None
+            elif key == "n_components" and value == "None":
                 params[key] = None
             else:
                 try:
